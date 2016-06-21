@@ -27,7 +27,6 @@ import rx.functions.Action1;
  */
 public class LoadingView extends View {
 
-    private final int DEFAULT_DURATION = 15;
     private final int DEFAULT_EXTERNAL_RADIUS = dp2px(82);
     private final int DEFAULT_INTERNAL_RADIUS = dp2px(8);
     private final int DEFAULT_RADIAN = 45;
@@ -103,6 +102,7 @@ public class LoadingView extends View {
 
         TypedArray typeArray = getContext().obtainStyledAttributes(attrs,
                 R.styleable.BezierLoadingView);
+        int DEFAULT_DURATION = 15;
         mDuration = typeArray.getInt(R.styleable.BezierLoadingView_lv_duration, DEFAULT_DURATION);
         mInternalR = typeArray.getDimension(R.styleable.BezierLoadingView_lv_internal_radius, DEFAULT_INTERNAL_RADIUS);
         mExternalR = typeArray.getDimension(R.styleable.BezierLoadingView_lv_external_radius, DEFAULT_EXTERNAL_RADIUS);
@@ -122,7 +122,7 @@ public class LoadingView extends View {
         }
 
         if (colorList.size() == 0) {
-            mColors = new int[]{ContextCompat.getColor(getContext(), R.color.loading_yellow), ContextCompat.getColor(getContext(), R.color.loading_pink)};
+            mColors = new int[]{ContextCompat.getColor(getContext(), R.color.color_F6B965), ContextCompat.getColor(getContext(), R.color.color_F04D61)};
         } else {
             mColors = new int[colorList.size()];
             for (int i = 0; i < colorList.size(); i++) {
@@ -194,7 +194,6 @@ public class LoadingView extends View {
     /**
      * 绘制各点圆
      *
-     * @param canvas
      */
     private void drawCircle(Canvas canvas) {
         for (int i = 0; i < mPoints.size(); i++) {
@@ -238,7 +237,6 @@ public class LoadingView extends View {
     /**
      * 绘制贝赛尔曲线
      *
-     * @param canvas
      */
     private void drawBezier(Canvas canvas) {
 
@@ -256,9 +254,8 @@ public class LoadingView extends View {
             leftX = mPoints.get(index >= mPoints.size() ? mPoints.size() - 1 : index).x;
             leftY = mPoints.get(index >= mPoints.size() ? mPoints.size() - 1 : index).y;
         } else {
-            int index = circleIndex;
-            leftX = mPoints.get(index < 0 ? 0 : index).x;
-            leftY = mPoints.get(index < 0 ? 0 : index).y;
+            leftX = mPoints.get(circleIndex < 0 ? 0 : circleIndex).x;
+            leftY = mPoints.get(circleIndex < 0 ? 0 : circleIndex).y;
         }
 
         double theta = getTheta(new PointF(leftX, leftY), new PointF(rightX, rightY));
@@ -403,7 +400,6 @@ public class LoadingView extends View {
     /**
      * 是否是偶数圈
      *
-     * @return
      */
     private boolean isEvenCyclic() {
         return mCyclic % 2 == 0;
@@ -413,7 +409,6 @@ public class LoadingView extends View {
      * 获得以(x0,y0)为圆心的圆y坐标
      *
      * @param angle 角度
-     * @return
      */
     private float getCircleY(int angle) {
         return y0 + mExternalR * (float) Math.sin(angle * 3.14 / 180);
@@ -423,7 +418,6 @@ public class LoadingView extends View {
      * 获得以(x0,y0)为圆心的圆x坐标
      *
      * @param angle 角度
-     * @return
      */
     private float getCircleX(int angle) {
         return x0 + mExternalR * (float) Math.cos(angle * 3.14 / 180);
@@ -432,19 +426,14 @@ public class LoadingView extends View {
     /**
      * 获取theta值
      *
-     * @param pointCenterLeft
-     * @param pointCenterRight
-     * @return
      */
     private double getTheta(PointF pointCenterLeft, PointF pointCenterRight) {
-        double theta = Math.atan((pointCenterRight.y - pointCenterLeft.y) / (pointCenterRight.x - pointCenterLeft.x));
-        return theta;
+        return Math.atan((pointCenterRight.y - pointCenterLeft.y) / (pointCenterRight.x - pointCenterLeft.x));
     }
 
     /**
      * 设置外圆半径
      *
-     * @param progress
      */
     public void setExternalRadius(int progress) {
         int R = (int) ((progress / 100f) * MAX_EXTERNAL_R);
@@ -456,7 +445,6 @@ public class LoadingView extends View {
     /**
      * 设置内圆半径
      *
-     * @param progress
      */
     public void setInternalRadius(int progress) {
         int r = (int) ((progress / 100f) * MAX_INTERNAL_R);
@@ -466,7 +454,6 @@ public class LoadingView extends View {
     /**
      * 设置时间间隔
      *
-     * @param progress
      */
     public void setDuration(int progress) {
         if (mTimer != null) {
@@ -480,7 +467,6 @@ public class LoadingView extends View {
     /**
      * 最大内圆半径
      *
-     * @return
      */
     private float getMaxInternalRadius() {
         return mInternalR / 10f * 14f;
@@ -489,7 +475,6 @@ public class LoadingView extends View {
     /**
      * 最小内圆半径
      *
-     * @return
      */
     private float getMinInternalRadius() {
         return mInternalR / 10f;
